@@ -85,15 +85,15 @@ static const char *termcmd[]  = { "kitty", NULL };
 static const char scratchpadname[] = "scratchpad";
 static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "120x34", NULL };
 
-static const char *raisevol[] = { "amixer", "sset", "Master", "5%+"};
-static const char *lowervol[] = { "amixer", "sset", "Master", "5%-"};
-static const char *togglevol[]  = { "amixer", "sset", "Master", "toggle"};
+static const char *raisevol[] = { "amixer", "sset", "Master", "5%+", NULL };
+static const char *lowervol[] = { "amixer", "sset", "Master", "5%-", NULL };
+static const char *mute[] = { "amixer", "sset", "Master", "toggle", NULL };
 
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
-  { 0, XF86XK_AudioRaiseVolume,              spawn,          {.v = raisevol } },
-  { 0, XF86XK_AudioLowerVolume,              spawn,          {.v = lowervol } },
-  { 0, XF86XK_AudioMute,                     spawn,          {.v = togglevol } },
+  { 0, XF86XK_AudioRaiseVolume,                   spawn,          {.v = raisevol } },
+  { 0, XF86XK_AudioLowerVolume,                   spawn,          {.v = lowervol } },
+  { 0, XF86XK_AudioMute,                          spawn,          {.v = mute }  },
 
   { 0,                            XK_Print,  spawn,          SHCMD("maim -u /home/laser/Bilder/Screenshots/$(date +%d%m%y-%H%M-%S.png)") },
   { ShiftMask,                    XK_Print,  spawn,          SHCMD("maim --select /home/laser/Bilder/Screenshots/$(date +%d%m%y-%H%M-%S.png)")},
