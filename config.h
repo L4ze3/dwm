@@ -1,7 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
-static const unsigned int borderpx  = 1;        /* border pixel of windows */
+static const unsigned int borderpx  = 0;        /* border pixel of windows */
 
 static const unsigned int snap      = 32;       /* snap pixel */
 
@@ -20,8 +20,9 @@ static const int showsystray        = 1;        /* 0 means no systray */
 static const int swallowfloating    = 1;        /* 1 means swallow floating windows by default */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 0;        /* 0 means bottom bar */
+static const int user_bh            = 22;        /* 0 means that dwm will calculate bar height, >= 1 means dwm will user_bh as bar height */
 
-static const char *fonts[]          = { "monospace:size=10" };
+static const char *fonts[]          = { "monospace:size=10", "fontawesome:size=10" };
 static const char dmenufont[]       = "monospace:size=10";
 
 // theme
@@ -34,6 +35,11 @@ static const char *colors[][3]      = {
 
 /* tagging */
 static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+
+static const unsigned int ulinepad	= 5;	/* horizontal padding between the underline and tag */
+static const unsigned int ulinestroke	= 2;	/* thickness / height of the underline */
+static const unsigned int ulinevoffset	= 0;	/* how far above the bottom of the bar the line should appear */
+static const int ulineall 		= 0;	/* 1 to show underline on all tags, 0 for just the active ones */
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -80,23 +86,27 @@ static const Layout layouts[] = {
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, NULL };
 
-static const char *termcmd[]  = { "kitty", NULL };
+static const char *termcmd[]  = { "st", NULL };
 
 static const char scratchpadname[] = "scratchpad";
 static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "120x34", NULL };
 
 static const char *raisevol[] = { "amixer", "sset", "Master", "5%+", NULL };
 static const char *lowervol[] = { "amixer", "sset", "Master", "5%-", NULL };
-static const char *mute[] = { "amixer", "sset", "Master", "toggle", NULL };
+static const char *mute[]     = { "amixer", "sset", "Master", "toggle", NULL };
+static const char *screenshot[]      = { "maim", "-u", "/home/laser/Bilder/Screenshots/$(date +%d%m%y-%H%M-%S.png)", NULL};
+static const char *screenshotsel[]   = { "maim", "--select", "/home/laser/Bilder/Screenshots/$(date +%d%m%y-%H%M-%S.png)", NULL};
+
+#include "movestack.c"
 
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
-  { 0, XF86XK_AudioRaiseVolume,                   spawn,          {.v = raisevol } },
-  { 0, XF86XK_AudioLowerVolume,                   spawn,          {.v = lowervol } },
-  { 0, XF86XK_AudioMute,                          spawn,          {.v = mute }  },
+  { 0, XF86XK_AudioRaiseVolume,              spawn,          {.v = raisevol } },
+  { 0, XF86XK_AudioLowerVolume,              spawn,          {.v = lowervol } },
+  { 0, XF86XK_AudioMute,                     spawn,          {.v = mute }  },
 
-  { 0,                            XK_Print,  spawn,          SHCMD("maim -u /home/laser/Bilder/Screenshots/$(date +%d%m%y-%H%M-%S.png)") },
-  { ShiftMask,                    XK_Print,  spawn,          SHCMD("maim --select /home/laser/Bilder/Screenshots/$(date +%d%m%y-%H%M-%S.png)")},
+  { 0,                            XK_Print,  spawn,          {.v = screenshot } },
+  { ShiftMask,                    XK_Print,  spawn,          {.v = screenshotsel } },
 
 	{ MODKEY,                       XK_d,      spawn,          {.v = dmenucmd } },
 	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
@@ -104,6 +114,8 @@ static const Key keys[] = {
 
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
+  { MODKEY|ShiftMask,             XK_j,      movestack,      {.i = +1 } },
+  { MODKEY|ShiftMask,             XK_k,      movestack,      {.i = -1 } },
 	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
 	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
 	{ MODKEY,                       XK_Tab,    view,           {0} },
@@ -129,7 +141,6 @@ static const Button buttons[] = {
 	/* click                event mask      button          function        argument */
 	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
-	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },
 	{ ClkStatusText,        0,              Button2,        spawn,          {.v = termcmd } },
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
