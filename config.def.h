@@ -1,7 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
-static const unsigned int borderpx  = 1;        /* border pixel of windows */
+static const unsigned int borderpx  = 0;        /* border pixel of windows */
 
 static const unsigned int snap      = 32;       /* snap pixel */
 
@@ -87,8 +87,6 @@ static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "120x34
 static const char *raisevol[] = { "amixer", "sset", "Master", "5%+", NULL };
 static const char *lowervol[] = { "amixer", "sset", "Master", "5%-", NULL };
 static const char *mute[]     = { "amixer", "sset", "Master", "toggle", NULL };
-static const char *screenshot[]      = { "maim", "-u", "/home/laser/Bilder/Screenshots/$(date +%d%m%y-%H%M-%S.png)", NULL};
-static const char *screenshotsel[]   = { "maim", "--select", "/home/laser/Bilder/Screenshots/$(date +%d%m%y-%H%M-%S.png)", NULL};
 
 
 #include "movestack.c"
@@ -99,10 +97,10 @@ static const Key keys[] = {
   { 0, XF86XK_AudioLowerVolume,              spawn,          {.v = lowervol } },
   { 0, XF86XK_AudioMute,                     spawn,          {.v = mute }  },
 
-  { 0,                            XK_Print,  spawn,          {.v = screenshot } },
-  { ShiftMask,                    XK_Print,  spawn,          {.v = screenshotsel } },
+  { 0,                            XK_Print,  spawn,          SHCMD("bash /home/laser/.config/rofi/bin/screenshot") },
+	{ MODKEY,                       XK_d,      spawn,          SHCMD("bash /home/laser/.config/rofi/bin/launcher") },
+	{ MODKEY,                       XK_r,      spawn,          SHCMD("bash /home/laser/.config/rofi/bin/runner") },
 
-	{ MODKEY,                       XK_d,      spawn,          {.v = dmenucmd } },
 	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_grave,  togglescratch,  {.v = scratchpadcmd } },
 
